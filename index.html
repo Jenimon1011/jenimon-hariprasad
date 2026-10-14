@@ -7,415 +7,344 @@
 <title>Jenimon Hariprasad</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-/* Layout: radiology-viewer hero (scan + corner annotations), then a single reading column with wide project grid */
+/* Layout: editorial single column on porcelain; hero pairs a light serif name with a line-drawn iso-contour slice; content set as quiet ruled rows, no cards */
 :root {
-  --bg: #F2F4F5;
-  --surface: #FFFFFF;
-  --ink: #16232B;
-  --muted: #56646C;
-  --line: #D5DCDF;
-  --accent: #B02A62;        /* segmentation-mask rose */
-  --accent-soft: #F6E3EB;
-  --scan-bg: #050708;
-  --scan-ink: #C9D3D8;
-  --f-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --f-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
-  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --paper: #F6F6F3;      /* porcelain, faint green-grey bias */
+  --ink: #1B1E23;
+  --soft: #5F656C;
+  --hair: #D9DBD6;
+  --stain: #2C4E86;      /* methylene blue, the histology stain */
+  --contour: #9AA0A4;
+  --serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0E1418; --surface: #151D22; --ink: #E4EAED; --muted: #94A3AB;
-    --line: #26323A; --accent: #EC6A9C; --accent-soft: #3A1A28; color-scheme: dark;
+    --paper: #111317; --ink: #E9E7E2; --soft: #A0A4A8; --hair: #2A2E33;
+    --stain: #93B2E6; --contour: #5E646B; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0E1418; --surface: #151D22; --ink: #E4EAED; --muted: #94A3AB;
-  --line: #26323A; --accent: #EC6A9C; --accent-soft: #3A1A28; color-scheme: dark;
+  --paper: #111317; --ink: #E9E7E2; --soft: #A0A4A8; --hair: #2A2E33;
+  --stain: #93B2E6; --contour: #5E646B; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body {
-  background: var(--bg); color: var(--ink);
-  font-family: var(--f-body); font-size: 16.5px; line-height: 1.6;
-  padding: 0 20px; padding-block: 0 64px;
+  background: var(--paper); color: var(--ink);
+  font-family: var(--sans); font-size: 17px; line-height: 1.65;
+  padding: 0 24px; padding-block: 0 80px;
+  -webkit-font-smoothing: antialiased;
 }
-.wrap { max-width: 1080px; margin: 0 auto; }
-a { color: var(--accent); text-underline-offset: 3px; }
-a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
-h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
-.label {
-  font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted);
-}
+.wrap { max-width: 1040px; margin: 0 auto; }
+a { color: inherit; text-decoration-color: var(--hair); text-underline-offset: 4px; text-decoration-thickness: 1px; transition: text-decoration-color .2s; }
+a:hover { text-decoration-color: var(--stain); }
+a:focus-visible, button:focus-visible { outline: 1.5px solid var(--stain); outline-offset: 4px; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; text-wrap: balance; }
+.small { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--soft); font-weight: 500; }
 
-/* Nav */
-nav { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding-block: 22px; border-bottom: 1px solid var(--line); }
-nav .who { font-family: var(--f-display); font-weight: 700; }
-nav ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; flex-wrap: wrap; }
-nav a { color: var(--muted); text-decoration: none; font-size: 14.5px; }
-nav a:hover { color: var(--ink); }
+/* Top bar */
+.bar { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; padding-block: 28px; }
+.bar nav { display: flex; gap: 28px; flex-wrap: wrap; }
+.bar nav a { text-decoration: none; color: var(--soft); font-size: 14px; }
+.bar nav a:hover { color: var(--ink); }
+.mark { font-family: var(--serif); font-size: 19px; font-style: italic; }
 
 /* Hero */
-.hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; padding-block: 56px 64px; }
+.hero { display: grid; grid-template-columns: 1.25fr 1fr; gap: 56px; align-items: center; padding-block: 64px 88px; }
 .hero > * { min-width: 0; }
-.hero h1 { font-size: clamp(40px, 6.4vw, 74px); line-height: 0.98; font-weight: 800; }
-.hero h1 span { color: var(--accent); }
-.hero .lede { font-size: 19px; color: var(--muted); max-width: 34em; margin: 22px 0 0; }
-.hero .lede strong { color: var(--ink); font-weight: 600; }
-.status {
-  display: inline-flex; align-items: center; gap: 10px; margin-top: 26px;
-  padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface);
-  font-size: 14px;
-}
-.status i { width: 8px; height: 8px; border-radius: 50%; background: #2E9E6B; flex: none; }
-.cta { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
-.btn {
-  font: 600 15px var(--f-body); padding: 11px 18px; border-radius: 8px; cursor: pointer;
-  border: 1px solid var(--ink); background: var(--ink); color: var(--bg); text-decoration: none;
-}
-.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
-.btn.ghost:hover { border-color: var(--ink); }
-
-.viewer { position: relative; aspect-ratio: 1; max-width: 100%; width: 100%; background: var(--scan-bg); border-radius: 6px; overflow: hidden; }
-.viewer canvas { width: 100%; height: 100%; display: block; }
-.viewer .c { position: absolute; font-family: var(--f-mono); font-size: 11px; line-height: 1.45; color: var(--scan-ink); opacity: .85; pointer-events: none; }
-.viewer .tl { top: 12px; left: 14px; } .viewer .tr { top: 12px; right: 14px; text-align: right; }
-.viewer .bl { bottom: 12px; left: 14px; } .viewer .br { bottom: 12px; right: 14px; text-align: right; }
-.viewer .mask { color: #FF7FB0; }
-.viewer-cap { margin-top: 10px; font-size: 13px; color: var(--muted); }
+.hero h1 { font-size: clamp(52px, 8.4vw, 108px); line-height: 0.95; font-weight: 300; letter-spacing: -0.025em; }
+.hero h1 em { font-style: italic; color: var(--stain); }
+.hero .intro { font-family: var(--serif); font-size: clamp(20px, 2.2vw, 25px); line-height: 1.45; font-weight: 300; margin: 36px 0 0; max-width: 30em; }
+.avail { display: flex; align-items: center; gap: 12px; margin-top: 36px; font-size: 15px; color: var(--soft); }
+.avail::before { content: ""; width: 28px; height: 1px; background: var(--stain); flex: none; }
+.slice { margin: 0; }
+.slice canvas { display: block; width: 100%; max-width: 440px; aspect-ratio: 1; margin-left: auto; }
+.slice figcaption { margin-top: 14px; font-size: 12.5px; color: var(--soft); text-align: right; font-style: italic; font-family: var(--serif); }
 
 /* Sections */
-section { padding-block: 56px; border-top: 1px solid var(--line); }
-.sec-head { display: grid; grid-template-columns: 220px 1fr; gap: 32px; }
-.sec-head > * { min-width: 0; }
-.sec-head h2 { font-size: 28px; font-weight: 700; margin-top: 6px; }
-.prose p { margin: 0 0 14px; max-width: 64ch; }
+section { display: grid; grid-template-columns: 200px 1fr; gap: 40px; padding-block: 72px; border-top: 1px solid var(--hair); }
+section > * { min-width: 0; }
+section > .small { padding-top: 10px; }
+.lead { font-family: var(--serif); font-size: clamp(24px, 2.8vw, 32px); line-height: 1.3; font-weight: 300; max-width: 26em; }
+.prose { margin-top: 24px; max-width: 62ch; color: var(--soft); }
+.prose p { margin: 0 0 14px; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--hair); }
+.facts > div { min-width: 0; }
+.facts dt { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); }
+.facts dd { margin: 6px 0 0; font-family: var(--serif); font-size: 19px; }
 
-/* Focus cards */
-.focus { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
-.focus div { padding: 18px 18px 20px; border-top: 3px solid var(--line); }
-.focus div:first-child { border-top-color: var(--accent); }
-.focus h3 { font-size: 17px; margin-bottom: 6px; }
-.focus p { margin: 0; color: var(--muted); font-size: 15px; }
-
-/* Projects */
-.projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 32px; }
-.proj {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
-  padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0;
-}
-.proj .meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.proj h3 { font-size: 20px; font-weight: 700; }
-.proj p { margin: 0; color: var(--muted); font-size: 15.5px; }
-.proj.lead { grid-column: span 2; border-color: var(--accent); }
-.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
-.tags span { font-family: var(--f-mono); font-size: 12px; padding: 3px 8px; border-radius: 4px; background: var(--bg); color: var(--ink); border: 1px solid var(--line); }
-.proj.lead .tags span { background: var(--accent-soft); border-color: transparent; }
+/* Work list */
+.work { list-style: none; margin: 0; padding: 0; }
+.work li { display: grid; grid-template-columns: 1fr 1.15fr; gap: 32px; padding-block: 28px; border-bottom: 1px solid var(--hair); }
+.work li:first-child { padding-top: 0; }
+.work li > * { min-width: 0; }
+.work h3 { font-size: 25px; line-height: 1.2; }
+.work .kind { font-size: 13px; color: var(--stain); margin-bottom: 8px; letter-spacing: 0.02em; }
+.work p { margin: 0; color: var(--soft); }
+.work .tools { margin-top: 12px; font-family: var(--mono); font-size: 12.5px; color: var(--soft); }
+.work li.feature h3 { font-size: 30px; }
 
 /* Timeline */
-.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 28px; }
-.timeline li { display: grid; grid-template-columns: 150px 1fr; gap: 24px; }
-.timeline li > * { min-width: 0; }
-.timeline .when { font-family: var(--f-mono); font-size: 13px; color: var(--muted); padding-top: 3px; font-variant-numeric: tabular-nums; }
-.timeline h3 { font-size: 18px; }
-.timeline .org { color: var(--muted); font-size: 15px; margin: 2px 0 6px; }
-.timeline p { margin: 0; max-width: 62ch; font-size: 15.5px; }
+.path { margin: 0; }
+.path > div { display: grid; grid-template-columns: 130px 1fr; gap: 24px; padding-block: 22px; border-bottom: 1px solid var(--hair); }
+.path > div:first-child { padding-top: 0; }
+.path > div > * { min-width: 0; }
+.path dt { font-family: var(--mono); font-size: 13px; color: var(--soft); padding-top: 6px; font-variant-numeric: tabular-nums; }
+.path dd { margin: 0; }
+.path h3 { font-size: 23px; }
+.path .where { font-size: 15px; color: var(--soft); margin-top: 2px; }
+.path p { margin: 10px 0 0; max-width: 60ch; color: var(--soft); }
 
-/* ECG divider */
-.ecg { display: block; width: 100%; height: 40px; margin: 8px 0 0; }
-.ecg path { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linejoin: round; }
-
-/* Skills */
-.skills { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px 40px; }
-.skills > div { min-width: 0; }
-.skills h3 { font-size: 16px; margin-bottom: 10px; }
-.skills ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.skills li { font-size: 14px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
-
-.creds { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 36px; }
-.cred { padding: 16px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
-.cred b { display: block; font-family: var(--f-display); font-size: 16px; }
-.cred span { color: var(--muted); font-size: 14px; }
-
-.langs { display: flex; flex-wrap: wrap; gap: 28px; margin-top: 8px; }
-.langs div b { font-family: var(--f-display); font-size: 18px; display: block; }
-.langs div span { font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); }
+/* Expertise */
+.cols { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 48px; }
+.cols > div { min-width: 0; }
+.cols h3 { font-size: 21px; margin-bottom: 10px; }
+.cols p { margin: 0; color: var(--soft); }
+.certs { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--hair); display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.certs > div { min-width: 0; }
+.certs b { font-family: var(--serif); font-weight: 400; font-size: 19px; display: block; }
+.certs span { font-size: 14px; color: var(--soft); }
 
 /* Contact */
-.contact { display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
-.contact > * { min-width: 0; }
-.contact h2 { font-size: clamp(30px, 4.4vw, 46px); font-weight: 800; line-height: 1.05; }
-.contact p { color: var(--muted); max-width: 52ch; margin: 14px 0 0; }
-.mail { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
-.mail code { font-family: var(--f-mono); font-size: 16px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; user-select: all; overflow-wrap: anywhere; }
-.copied { font-size: 13px; color: var(--muted); min-width: 4em; }
-footer { padding-top: 40px; color: var(--muted); font-size: 13px; }
+.contact h2 { font-size: clamp(36px, 5.4vw, 64px); line-height: 1.05; font-weight: 300; letter-spacing: -0.02em; }
+.contact h2 em { color: var(--stain); }
+.contact p { color: var(--soft); max-width: 50ch; margin: 22px 0 0; }
+.reach { display: flex; flex-wrap: wrap; align-items: baseline; gap: 14px 28px; margin-top: 36px; }
+.reach .email { font-family: var(--serif); font-size: clamp(22px, 3vw, 30px); overflow-wrap: anywhere; user-select: all; }
+.reach button { font: 500 14px var(--sans); color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--stain); padding: 2px 0; cursor: pointer; }
+.reach .note { font-size: 13px; color: var(--soft); min-width: 4em; }
+.reach .li { font-size: 15px; }
+footer { margin-top: 72px; font-size: 13px; color: var(--soft); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
 @media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; gap: 36px; padding-block: 40px 48px; }
-  .viewer { max-width: 460px; }
-  .sec-head { grid-template-columns: 1fr; gap: 10px; }
-  .focus, .creds { grid-template-columns: 1fr; }
-  .projects { grid-template-columns: 1fr; }
-  .proj.lead { grid-column: auto; }
-  .skills { grid-template-columns: 1fr; }
-  .contact { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr; gap: 40px; padding-block: 32px 64px; }
+  .slice canvas { margin-left: 0; max-width: 360px; }
+  .slice figcaption { text-align: left; }
+  section { grid-template-columns: 1fr; gap: 20px; padding-block: 56px; }
+  .work li { grid-template-columns: 1fr; gap: 10px; }
+  .cols, .certs { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
-  body { padding: 0 16px; padding-block: 0 48px; }
-  nav ul { gap: 14px; }
-  .timeline li { grid-template-columns: 1fr; gap: 4px; }
+  body { padding: 0 16px; padding-block: 0 56px; }
+  .facts { grid-template-columns: 1fr; gap: 16px; }
+  .path > div { grid-template-columns: 1fr; gap: 4px; }
+  .bar nav { gap: 18px; }
 }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 
 <div class="wrap">
-  <nav>
-    <span class="who">Jenimon Hariprasad</span>
-    <ul>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#experience">Experience</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-
-  <header class="hero">
-    <div>
-      <div class="label">Biomedical Engineer · M.Sc. candidate · Halle (Saale)</div>
-      <h1 style="margin-top:14px">Teaching machines to <span>read medical images.</span></h1>
-      <p class="lede">I'm a biomedical engineering student at <strong>Hochschule Anhalt</strong> working on <strong>deep learning for medical imaging</strong>, with a mechanical engineering degree and hands-on quality inspection experience behind it. I build models, and I know what it takes to get a medical device through ISO 13485 and the EU MDR.</p>
-      <div class="status"><i aria-hidden="true"></i>Looking for a Master's thesis or internship in AI for medical imaging · available now</div>
-      <div class="cta">
-        <a class="btn" href="#contact">Get in touch</a>
-        <a class="btn ghost" href="https://linkedin.com/in/jenimon-hariprasad-1ab964198" target="_blank" rel="noopener">LinkedIn</a>
-      </div>
-    </div>
-    <figure style="margin:0">
-      <div class="viewer" role="img" aria-label="Stylised axial scan with a predicted segmentation mask outlined">
-        <canvas id="scan"></canvas>
-        <div class="c tl">AX · SL 42/120<br>512 × 512</div>
-        <div class="c tr">W 80 &nbsp;L 40<br>Zoom 1.0</div>
-        <div class="c bl mask">■ MASK lesion (pred.)</div>
-        <div class="c br">J. Hariprasad<br>CNN · TensorFlow</div>
-      </div>
-      <figcaption class="viewer-cap">Generated illustration, not patient data.</figcaption>
-    </figure>
+  <header class="bar">
+    <span class="mark">J. Hariprasad</span>
+    <nav aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#path">Path</a>
+      <a href="#contact">Contact</a>
+    </nav>
   </header>
 
+  <div class="hero">
+    <div>
+      <div class="small">Biomedical Engineer · Halle (Saale)</div>
+      <h1 style="margin-top:22px">Jenimon<br><em>Hariprasad</em></h1>
+      <p class="intro">I train neural networks to read medical images, and I understand the quality and regulatory work that brings a device safely to patients.</p>
+      <div class="avail">Open to a Master's thesis or internship in AI for medical imaging</div>
+    </div>
+    <figure class="slice">
+      <canvas id="slice" role="img" aria-label="Line drawing of a synthetic axial brain slice as iso-intensity contours, with one region outlined in blue as a segmentation boundary"></canvas>
+      <figcaption>Iso-intensity contours of a synthetic slice. In blue: a segmentation boundary.</figcaption>
+    </figure>
+  </div>
+
   <section id="about">
-    <div class="sec-head">
-      <div class="label">01 · Focus</div>
+    <div class="small">About</div>
+    <div>
+      <p class="lead">An engineer between three disciplines: mechanical design, biomedical engineering and applied machine learning.</p>
+      <div class="prose">
+        <p>I'm completing an M.Sc. in Biomedical Engineering at Hochschule Anhalt, where my work centres on deep learning for medical image segmentation and classification. Before that I studied mechanical engineering in India and spent over a year in quality control at a foundry, inspecting castings for automotive, pump, valve and railway customers.</p>
+        <p>That mix shapes how I work. I care about whether a model performs, and also about whether it could be documented, risk-managed and certified under ISO 13485, ISO 14971 and the EU MDR.</p>
+      </div>
+      <dl class="facts">
+        <div><dt>Available</dt><dd>Immediately</dd></div>
+        <div><dt>Location</dt><dd>Anywhere in Germany</dd></div>
+        <div><dt>Languages</dt><dd>English C1 · German B2 · Malayalam</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="small">Selected work</div>
+    <ul class="work">
+      <li class="feature">
+        <div><div class="kind">Medical imaging · M.Sc.</div><h3>Segmentation and classification of medical images</h3></div>
+        <div><p>A TensorFlow pipeline that segments regions of interest in medical images and classifies them, covering data preparation, model training and evaluation.</p><div class="tools">TensorFlow · Keras · CNN · Python</div></div>
+      </li>
+      <li>
+        <div><div class="kind">Medical imaging</div><h3>Tumour detection with convolutional networks</h3></div>
+        <div><p>Convolutional neural networks trained to detect tumours in medical scans.</p><div class="tools">PyTorch · OpenCV · Scikit-learn</div></div>
+      </li>
+      <li>
+        <div><div class="kind">Biosignals</div><h3>ECG arrhythmia detection</h3></div>
+        <div><p>Raw ECG recordings cleaned with digital filters, with Fourier analysis used to extract the features for detecting arrhythmias.</p><div class="tools">MATLAB · FFT · Digital filters</div></div>
+      </li>
+      <li>
+        <div><div class="kind">CAD / CAM</div><h3>A medical implant, from model to part</h3></div>
+        <div><p>Designed in SolidWorks and taken through CAD/CAM to manufacture, as the final project of a full CAD/CAM course.</p><div class="tools">SolidWorks · CAD/CAM</div></div>
+      </li>
+      <li>
+        <div><div class="kind">Computer vision</div><h3>Kitchenware object detection</h3></div>
+        <div><p>Object detection for everyday kitchen items with CNNs and OpenCV, using data augmentation to make the model more robust.</p><div class="tools">CNN · OpenCV · Data augmentation</div></div>
+      </li>
+      <li>
+        <div><div class="kind">B.Tech. thesis</div><h3>Refrigeration performance with nanoparticles</h3></div>
+        <div><p>How adding nanoparticles to a refrigeration system can improve its performance.</p><div class="tools">Thermodynamics · Nanofluids</div></div>
+      </li>
+    </ul>
+  </section>
+
+  <section id="path">
+    <div class="small">Path</div>
+    <dl class="path">
       <div>
-        <h2>Where I can help</h2>
-        <div class="focus" style="margin-top:22px">
-          <div><h3>AI for medical imaging</h3><p>Segmentation and classification with CNNs in TensorFlow and PyTorch, from preprocessing and augmentation to evaluation.</p></div>
-          <div><h3>Biosignals</h3><p>Filtering and frequency-domain analysis of ECG signals in MATLAB for arrhythmia detection.</p></div>
-          <div><h3>Quality &amp; regulatory</h3><p>ISO 13485, ISO 14971 and EU MDR 2017/745, plus a year of hands-on quality control in industrial casting.</p></div>
-        </div>
+        <dt>– 2027</dt>
+        <dd><h3>M.Sc. Biomedical Engineering</h3><div class="where">Hochschule Anhalt, Germany · expected March 2027</div>
+        <p>Medical imaging, AI for diagnostics, LabVIEW, SolidWorks, and medical device quality and regulation.</p></dd>
+      </div>
+      <div>
+        <dt>2020 – 2021</dt>
+        <dd><h3>Quality Inspection Engineer</h3><div class="where">Autokast Ltd., Cherthala, India</div>
+        <p>Inspected grey iron, ductile iron and steel castings for automotive, pump, valve and railway customers, working from engineering drawings and customer quality requirements.</p></dd>
+      </div>
+      <div>
+        <dt>2019</dt>
+        <dd><h3>B.Tech. Mechanical Engineering</h3><div class="where">APJ Abdul Kalam Technological University, India</div></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="expertise">
+    <div class="small">Expertise</div>
+    <div>
+      <div class="cols">
+        <div><h3>Machine learning</h3><p>Python, TensorFlow, PyTorch, Keras, Scikit-learn, OpenCV, NumPy, Pandas, Streamlit, Jupyter.</p></div>
+        <div><h3>Signals &amp; instrumentation</h3><p>MATLAB, FFT and digital filtering, LabVIEW, data analysis and visualisation.</p></div>
+        <div><h3>Quality &amp; regulatory</h3><p>ISO 13485, ISO 14971, EU MDR 2017/745, ISO 9001. Design controls and DHF, CAPA, GSPR, UDI, PMCF.</p></div>
+        <div><h3>Engineering design</h3><p>SolidWorks, AutoCAD, Revit, engineering drawings, technical documentation.</p></div>
+      </div>
+      <div class="certs">
+        <div><b>AI for Medical Diagnosis</b><span>DeepLearning.AI · January 2025</span></div>
+        <div><b>Neural Networks and Deep Learning</b><span>DeepLearning.AI · April 2025</span></div>
       </div>
     </div>
   </section>
 
-  <section id="projects">
-    <div class="sec-head">
-      <div class="label">02 · Projects</div>
-      <div><h2>Selected work</h2></div>
-    </div>
-    <div class="projects">
-      <article class="proj lead">
-        <div class="meta"><span class="label">Medical imaging · Deep learning</span><span class="label">M.Sc.</span></div>
-        <h3>AI-based medical image segmentation and classification</h3>
-        <p>Built a TensorFlow pipeline that segments regions of interest in medical images and classifies them. Covered data preparation, model training and evaluation.</p>
-        <div class="tags"><span>TensorFlow</span><span>Keras</span><span>CNN</span><span>Segmentation</span><span>Python</span></div>
-      </article>
-      <article class="proj">
-        <div class="meta"><span class="label">Medical imaging</span></div>
-        <h3>Tumour detection with CNNs</h3>
-        <p>Trained convolutional neural networks to detect tumours in medical scans.</p>
-        <div class="tags"><span>CNN</span><span>PyTorch</span><span>OpenCV</span><span>Scikit-learn</span></div>
-      </article>
-      <article class="proj">
-        <div class="meta"><span class="label">Biosignal processing</span></div>
-        <h3>ECG arrhythmia detection</h3>
-        <p>Cleaned raw ECG recordings with digital filters and used Fourier analysis (FFT) to extract features for detecting arrhythmias.</p>
-        <div class="tags"><span>MATLAB</span><span>FFT</span><span>Digital filters</span></div>
-      </article>
-      <article class="proj">
-        <div class="meta"><span class="label">CAD / CAM</span></div>
-        <h3>Implant design to manufacture</h3>
-        <p>Designed a medical implant in SolidWorks and carried it through CAD/CAM to a manufactured part, as the capstone of a full CAD/CAM course.</p>
-        <div class="tags"><span>SolidWorks</span><span>CAD/CAM</span><span>Design for manufacture</span></div>
-      </article>
-      <article class="proj">
-        <div class="meta"><span class="label">Computer vision</span></div>
-        <h3>Kitchenware object detection</h3>
-        <p>Object detection for everyday kitchen items using CNNs and OpenCV, with data augmentation to make the model more robust.</p>
-        <div class="tags"><span>CNN</span><span>OpenCV</span><span>Data augmentation</span></div>
-      </article>
-      <article class="proj">
-        <div class="meta"><span class="label">Thermal engineering</span><span class="label">B.Tech. thesis</span></div>
-        <h3>Refrigeration performance with nanoparticles</h3>
-        <p>Studied how adding nanoparticles to a refrigeration system can improve its performance.</p>
-        <div class="tags"><span>Thermodynamics</span><span>Nanofluids</span></div>
-      </article>
-    </div>
-  </section>
-
-  <section id="experience">
-    <div class="sec-head">
-      <div class="label">03 · Path</div>
-      <div>
-        <h2>Education &amp; experience</h2>
-        <svg class="ecg" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 24 H120 L130 20 L140 24 H160 L168 30 L176 4 L184 34 L192 24 H215 L228 17 L242 24 H330 L340 20 L350 24 H370 L378 30 L386 4 L394 34 L402 24 H425 L438 17 L452 24 H600"/></svg>
-        <ol class="timeline" style="margin-top:24px">
-          <li>
-            <div class="when">until Mar 2027</div>
-            <div><h3>M.Sc. Biomedical Engineering</h3><div class="org">Hochschule Anhalt</div>
-            <p>Medical imaging, AI for diagnostics, LabVIEW, SolidWorks, and medical device quality and regulation.</p></div>
-          </li>
-          <li>
-            <div class="when">2020 – 2021</div>
-            <div><h3>Quality Inspection / QC Engineer</h3><div class="org">Autokast Ltd. · Cherthala, Kerala</div>
-            <p>Inspected grey iron, ductile iron and steel castings for automotive, pump, valve and railway customers. Interpreted engineering drawings and checked parts against customer quality requirements.</p></div>
-          </li>
-          <li>
-            <div class="when">2019</div>
-            <div><h3>B.Tech. Mechanical Engineering</h3><div class="org">APJ Abdul Kalam Technological University · Kerala</div>
-            <p>Thesis on improving refrigeration performance with nanoparticles.</p></div>
-          </li>
-        </ol>
+  <section id="contact" class="contact">
+    <div class="small">Contact</div>
+    <div>
+      <h2>Working on medical imaging? <em>Let's talk.</em></h2>
+      <p>I'm looking for a Master's thesis or internship and can start right away. Happy to write in English or German.</p>
+      <div class="reach">
+        <span class="email" id="email">jenimonh11@gmail.com</span>
+        <button type="button" id="copy">Copy</button>
+        <span class="note" id="note" aria-live="polite"></span>
       </div>
-    </div>
-  </section>
-
-  <section id="skills">
-    <div class="sec-head">
-      <div class="label">04 · Toolkit</div>
-      <div>
-        <h2>Skills</h2>
-        <div class="skills" style="margin-top:24px">
-          <div><h3>AI &amp; data</h3><ul><li>Python</li><li>TensorFlow</li><li>PyTorch</li><li>Keras</li><li>Scikit-learn</li><li>OpenCV</li><li>NumPy</li><li>Pandas</li><li>Streamlit</li><li>Jupyter</li></ul></div>
-          <div><h3>Signals &amp; instrumentation</h3><ul><li>MATLAB</li><li>FFT &amp; digital filtering</li><li>LabVIEW</li><li>Data visualisation</li></ul></div>
-          <div><h3>Quality &amp; regulatory</h3><ul><li>ISO 13485</li><li>ISO 14971</li><li>EU MDR 2017/745</li><li>ISO 9001</li><li>Design controls &amp; DHF</li><li>CAPA</li><li>GSPR</li><li>UDI</li><li>PMCF</li></ul></div>
-          <div><h3>Engineering design</h3><ul><li>SolidWorks</li><li>AutoCAD</li><li>Revit (BIM)</li><li>Engineering drawings</li><li>Technical documentation</li></ul></div>
-        </div>
-        <div class="creds">
-          <div class="cred"><b>AI for Medical Diagnosis</b><span>DeepLearning.AI · Jan 2025</span></div>
-          <div class="cred"><b>Neural Networks and Deep Learning</b><span>DeepLearning.AI · Apr 2025</span></div>
-        </div>
-        <div style="margin-top:36px">
-          <h3 style="font-size:16px">Languages</h3>
-          <div class="langs">
-            <div><b>English</b><span>C1 · fluent</span></div>
-            <div><b>Deutsch</b><span>B2</span></div>
-            <div><b>Malayalam</b><span>native</span></div>
-          </div>
-        </div>
+      <div class="reach" style="margin-top:18px">
+        <a class="li" href="https://linkedin.com/in/jenimon-hariprasad-1ab964198" target="_blank" rel="noopener">LinkedIn ↗</a>
       </div>
+      <footer><span>© 2026 Jenimon Hariprasad</span><span>Halle (Saale), Germany</span></footer>
     </div>
-  </section>
-
-  <section id="contact">
-    <div class="contact">
-      <div>
-        <div class="label">05 · Contact</div>
-        <h2 style="margin-top:10px">Have a thesis topic or project in medical imaging?</h2>
-        <p>I can start immediately and am happy to relocate anywhere in Germany. I write applications in English or German.</p>
-        <div class="mail">
-          <code id="email">jenimonh11@gmail.com</code>
-          <button class="btn ghost" id="copy" type="button">Copy email</button>
-          <span class="copied" id="copied" aria-live="polite"></span>
-        </div>
-      </div>
-      <a class="btn" href="https://linkedin.com/in/jenimon-hariprasad-1ab964198" target="_blank" rel="noopener">View LinkedIn profile</a>
-    </div>
-    <footer>© 2026 Jenimon Hariprasad · Halle (Saale), Germany</footer>
   </section>
 </div>
 
 <script>
 (function () {
-  // Copy email
-  var btn = document.getElementById('copy'), out = document.getElementById('copied'), em = document.getElementById('email');
+  var btn = document.getElementById('copy'), note = document.getElementById('note'), em = document.getElementById('email');
   btn.addEventListener('click', function () {
-    var text = em.textContent;
-    function fallback() { var r = document.createRange(); r.selectNodeContents(em); var s = getSelection(); s.removeAllRanges(); s.addRange(r); out.textContent = 'Selected'; }
-    try {
-      navigator.clipboard.writeText(text).then(function () { out.textContent = 'Copied'; }, fallback);
-    } catch (e) { fallback(); }
+    function sel() { var r = document.createRange(); r.selectNodeContents(em); var s = getSelection(); s.removeAllRanges(); s.addRange(r); note.textContent = 'Selected'; }
+    try { navigator.clipboard.writeText(em.textContent).then(function () { note.textContent = 'Copied'; }, sel); } catch (e) { sel(); }
   });
 
-  // Generative axial "scan"
-  var cv = document.getElementById('scan'), ctx = cv.getContext('2d');
-  var N = 360;
-  cv.width = N; cv.height = N;
+  // Iso-contour slice (marching squares over a synthetic field)
+  var cv = document.getElementById('slice'), ctx = cv.getContext('2d');
   function hash(x, y) { var h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return h - Math.floor(h); }
-  function vnoise(x, y) {
+  function vn(x, y) {
     var xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
     var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
     var a = hash(xi, yi), b = hash(xi + 1, yi), c = hash(xi, yi + 1), d = hash(xi + 1, yi + 1);
     return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
   }
-  var cx = N / 2, cy = N / 2 + 4, rx = 128, ry = 150;
-  var lx = cx + 42, ly = cy - 38, lr = 26;
-  var img = ctx.createImageData(N, N), D = img.data;
-  for (var y = 0; y < N; y++) {
-    for (var x = 0; x < N; x++) {
-      var dx = (x - cx) / rx, dy = (y - cy) / ry, r = Math.sqrt(dx * dx + dy * dy);
-      var n = vnoise(x / 18, y / 18) * 0.6 + vnoise(x / 6, y / 6) * 0.3 + hash(x, y) * 0.1;
-      var val = 0;
-      if (r < 1.07 && r > 0.98) val = 205 + n * 40;               // skull
-      else if (r <= 0.98 && r > 0.94) val = 40 + n * 25;           // CSF gap
-      else if (r <= 0.94) {
-        // gyri-like folding + ventricles
-        var fold = Math.sin(Math.atan2(dy, dx) * 22 + r * 16 + n * 3) * 0.5 + 0.5;
-        val = 95 + fold * 35 * Math.min(1, (r - 0.2) * 2.4) + n * 40;
-        var vx = (x - cx) / 22, vy1 = (y - cy + 20) / 46, vx2 = Math.abs(x - cx) - 14;
-        if ((vx2 / 10) * (vx2 / 10) + vy1 * vy1 < 1) val = 35 + n * 20;
-        if (Math.abs(x - cx) < 2 + n * 2 && Math.abs(y - cy) < ry * 0.86) val *= 0.6;
-        var ldx = x - lx, ldy = y - ly, ld = Math.sqrt(ldx * ldx + ldy * ldy) / (lr * (0.85 + vnoise(x / 9, y / 9) * 0.35));
-        if (ld < 1) val = val * ld + (175 + n * 30) * (1 - ld);
+  function ss(e0, e1, x) { var t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); }
+  var G = 150;
+  function tissue(x, y) {          // x,y in [0,1]
+    var dx = (x - 0.5) / 0.36, dy = (y - 0.52) / 0.43, r = Math.sqrt(dx * dx + dy * dy);
+    var m = 1 - ss(0.82, 1.0, r);
+    var n = vn(x * 5, y * 5) * 0.55 + vn(x * 11 + 7, y * 11) * 0.3 + vn(x * 23, y * 23 + 3) * 0.15;
+    var fold = Math.sin(Math.atan2(dy, dx) * 9 + r * 7 + n * 4) * 0.08;
+    var mid = Math.exp(-Math.pow((x - 0.5) / 0.012, 2)) * 0.18 * (r < 0.85 ? 1 : 0);
+    return m * (0.35 + n * 0.6 + fold) - mid;
+  }
+  var lx = 0.63, ly = 0.38;
+  function lesion(x, y) {
+    var wx = x + (vn(x * 14, y * 14) - 0.5) * 0.03, wy = y + (vn(x * 14 + 5, y * 14) - 0.5) * 0.03;
+    var d2 = (wx - lx) * (wx - lx) / 0.0042 + (wy - ly) * (wy - ly) / 0.0032;
+    return Math.exp(-d2);
+  }
+  function sample(fn) {
+    var F = new Float32Array((G + 1) * (G + 1));
+    for (var j = 0; j <= G; j++) for (var i = 0; i <= G; i++) F[j * (G + 1) + i] = fn(i / G, j / G);
+    return F;
+  }
+  var T = sample(tissue), L = sample(lesion);
+  function contour(F, level, S) {
+    ctx.beginPath();
+    var W = G + 1, k = S / G;
+    function lerp(a, b, va, vb) { var t = (level - va) / (vb - va); return a + (b - a) * t; }
+    for (var j = 0; j < G; j++) for (var i = 0; i < G; i++) {
+      var a = F[j * W + i], b = F[j * W + i + 1], c = F[(j + 1) * W + i + 1], d = F[(j + 1) * W + i];
+      var idx = (a > level ? 8 : 0) | (b > level ? 4 : 0) | (c > level ? 2 : 0) | (d > level ? 1 : 0);
+      if (idx === 0 || idx === 15) continue;
+      var x = i * k, y = j * k;
+      var top = [lerp(x, x + k, a, b), y], right = [x + k, lerp(y, y + k, b, c)],
+          bot = [lerp(x, x + k, d, c), y + k], left = [x, lerp(y, y + k, a, d)];
+      var segs;
+      switch (idx) {
+        case 1: case 14: segs = [[left, bot]]; break;
+        case 2: case 13: segs = [[bot, right]]; break;
+        case 3: case 12: segs = [[left, right]]; break;
+        case 4: case 11: segs = [[top, right]]; break;
+        case 5: segs = [[left, top], [bot, right]]; break;
+        case 6: case 9: segs = [[top, bot]]; break;
+        case 7: case 8: segs = [[left, top]]; break;
+        case 10: segs = [[top, right], [left, bot]]; break;
       }
-      var i = (y * N + x) * 4;
-      D[i] = D[i + 1] = D[i + 2] = Math.max(0, Math.min(255, val)); D[i + 3] = 255;
+      for (var s = 0; s < segs.length; s++) { ctx.moveTo(segs[s][0][0], segs[s][0][1]); ctx.lineTo(segs[s][1][0], segs[s][1][1]); }
     }
+    ctx.stroke();
   }
-  ctx.putImageData(img, 0, 0);
-  var base = ctx.getImageData(0, 0, N, N);
-
-  // Contour of the predicted mask
-  var pts = [];
-  for (var k = 0; k <= 64; k++) {
-    var t = k / 64 * Math.PI * 2;
-    var rr = lr * (1.05 + 0.18 * Math.sin(t * 3 + 1) + 0.08 * Math.sin(t * 7));
-    pts.push([lx + Math.cos(t) * rr, ly + Math.sin(t) * rr]);
+  function render() {
+    var css = getComputedStyle(document.documentElement);
+    var size = cv.getBoundingClientRect().width || 400, dpr = Math.min(2, window.devicePixelRatio || 1);
+    cv.width = Math.round(size * dpr); cv.height = Math.round(size * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, size, size);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = css.getPropertyValue('--contour').trim();
+    for (var lv = 0.08; lv < 0.95; lv += 0.07) { ctx.lineWidth = lv < 0.12 ? 1.1 : 0.6; ctx.globalAlpha = lv < 0.12 ? 0.9 : 0.75; contour(T, lv, size); }
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = css.getPropertyValue('--stain').trim();
+    ctx.lineWidth = 0.7; ctx.setLineDash([2, 3]); contour(L, 0.22, size);
+    ctx.setLineDash([]); ctx.lineWidth = 1.6; contour(L, 0.5, size);
   }
-  function draw(p) {
-    ctx.putImageData(base, 0, 0);
-    var upto = Math.max(2, Math.floor(pts.length * p));
-    ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]);
-    for (var j = 1; j < upto; j++) ctx.lineTo(pts[j][0], pts[j][1]);
-    if (p >= 1) { ctx.closePath(); ctx.fillStyle = 'rgba(255,90,150,0.22)'; ctx.fill(); }
-    ctx.strokeStyle = '#FF7FB0'; ctx.lineWidth = 1.6; ctx.stroke();
-    if (p >= 1) {
-      ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255,127,176,0.7)'; ctx.lineWidth = 1;
-      ctx.strokeRect(lx - lr * 1.4, ly - lr * 1.4, lr * 2.8, lr * 2.8); ctx.setLineDash([]);
-      ctx.fillStyle = '#FF7FB0'; ctx.font = '10px "IBM Plex Mono", monospace';
-      ctx.fillText('ROI', lx - lr * 1.4, ly - lr * 1.4 - 5);
-    }
-  }
-  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce) { draw(1); return; }
-  draw(1); // visible resting state first
-  var start = null;
-  setTimeout(function () {
-    function step(ts) { if (!start) start = ts; var p = Math.min(1, (ts - start) / 1400); draw(p); if (p < 1) requestAnimationFrame(step); }
-    requestAnimationFrame(step);
-  }, 400);
+  render();
+  var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(render, 120); });
+  if (window.matchMedia) { var mq = matchMedia('(prefers-color-scheme: dark)'); (mq.addEventListener ? mq.addEventListener('change', render) : mq.addListener(render)); }
+  new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 })();
 </script>
 </body>
